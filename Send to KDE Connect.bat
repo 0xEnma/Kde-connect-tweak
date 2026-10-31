@@ -11,15 +11,25 @@ if exist "%SYSTEM_PATH%" (
 ) else if exist "%USER_PATH%" (
     set "FULL_CLI=%USER_PATH%"
 ) else (
-    echo [ERROR] KDE Connect CLI not found!
-    echo Checked:
-    echo 1. %SYSTEM_PATH%
-    echo 2. %USER_PATH%
-    echo.
-    echo Please ensure KDE Connect is installed.
-    pause
-    exit /b 1
+
+    :: Find KDE Connect CLI through PATH (also supports Microsoft Store alias)
+    set "FULL_CLI=kdeconnect-cli.exe"
+    where kdeconnect-cli.exe >nul 2>&1
+    if errorlevel 1 (
+        
+        echo [ERROR] KDE Connect CLI not found!
+        echo Checked:
+        echo 1. %SYSTEM_PATH%
+        echo 2. %USER_PATH%
+        echo 3. Whether KDE Connect CLI can be found in PATH Env-Variable. 
+        echo.
+        echo Please ensure KDE Connect is installed.
+        pause
+        exit /b 1
+
+    )
 )
+
 
 :: 2. Check if we have files to send
 if "%~1"=="" (
